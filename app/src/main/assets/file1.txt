@@ -1,0 +1,96 @@
+1. Overview
+In this quick tutorial, we'll learn about the various ways of reading a file in Kotlin.
+
+We'll cover both use cases of reading the entire file as a String, as well as reading it into a list of individual lines. Also obtaining it from a full absolute path or from a project resource.
+
+2. Reading a File
+Let's first create an input file that will be read by Kotlin. We create a file called Kotlin.in and place it in a directory that can be accessed by our code.
+
+The file's contents could be:
+
+1
+2
+3
+4
+5
+Hello to Kotlin. It's:
+1. Concise
+2. Safe
+3. Interoperable
+4. Tool-friendly
+Now let's look at the different ways in which we can read this file. We should pass the full path of the file created above as the input for the initial methods and the relative path in our resources for the last two.
+
+2.1. forEachLine
+Reads a file line by line using the specified charset (default is UTF-8) and calls an action for each line:
+
+1
+2
+fun readFileLineByLineUsingForEachLine(fileName: String)
+  = File(fileName).forEachLine { println(it) }
+2.2. useLines
+Calls a given block callback, giving it a sequence of all the lines in a file.
+
+Once the processing is complete, the file gets closed:
+
+1
+2
+fun readFileAsLinesUsingUseLines(fileName: String): List<String>
+  = File(fileName).useLines { it.toList() }
+2.3. bufferedReader
+Returns a new BufferedReader for reading the content of the file.
+
+Once we have a BufferedReader, we can read all the lines in it:
+
+1
+2
+fun readFileAsLinesUsingBufferedReader(fileName: String): List<String>
+  = File(fileName).bufferedReader().readLines()
+2.4. readLines
+Directly reads the contents of the file as a list of lines:
+
+1
+2
+fun readFileAsLinesUsingReadLines(fileName: String): List<String>
+  = File(fileName).readLines()
+This method isn't recommended being used for huge files.
+
+2.5. inputStream
+Constructs a new FileInputStream for the file and returns it as a result.
+
+Once we have the input stream, we can convert that into bytes, and then into a complete String:
+
+1
+2
+fun readFileAsTextUsingInputStream(fileName: String)
+  = File(fileName).inputStream().readBytes().toString(Charsets.UTF_8)
+2.6. readText
+Reads the entire content of the file as a String the specified charset (default is UTF-8):
+
+1
+2
+fun readFileDirectlyAsText(fileName: String): String
+  = File(fileName).readText(Charsets.UTF_8)
+This method isn't recommended for huge files and has an internal limitation of 2 GB file size.
+
+2.7. getResource
+Finds a resource with the given name and returns a URL object:
+
+1
+2
+fun readFileUsingGetResource(fileName: String)
+  = this::class.java.getResource(fileName).readText(Charsets.UTF_8)
+If it finds the resource, it will return a URL, which can be processed calling the readText method as shown before. If it cannot find the resource, it returns null. When using getResource, the passed in fileName is not an absolute file name but a name relative to our project resources.
+
+2.8. getResourceAsStream
+Finds a resource with the given name and returns an InputStream instance:
+
+1
+2
+fun readFileAsLinesUsingGetResourceAsStream(fileName: String)
+  = this::class.java.getResourceAsStream(fileName).bufferedReader().readLines()
+If it finds the resource, it will return an InputStream, which can be processed as shown before — for instance, by getting a BufferedReader. If it cannot find the resource, it returns null. When using getResourceAsStream, the passed in fileName is not an absolute file name but a name relative to our project resources.
+
+3. Conclusion
+In this article, we saw the various ways of reading a file in Kotlin. Depending on the use case, we can either opt for reading the file line-by-line or reading it entirely as a text. We can refer to the file in an absolute manner or find it among resources.
+
+The source code for this article can be found in the following GitHub repo.
