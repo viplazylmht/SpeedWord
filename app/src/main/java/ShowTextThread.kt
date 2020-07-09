@@ -49,6 +49,10 @@ class ShowTextThread(
         }
 
         viewHolder.progress.progress = index
+        val sp = viewHolder.speed.progress
+
+        duration = 60000 / (if (sp > 0) sp else 1)
+
         viewHolder.progress.max = list.size - 1
 
         activity.runOnUiThread {
